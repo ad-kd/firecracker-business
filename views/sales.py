@@ -47,6 +47,9 @@ class SalesView:
         self.prod_tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         scroll.pack(side=tk.RIGHT, fill=tk.Y)
         self.prod_tree.bind("<Double-1>", lambda e: self.add_to_cart())
+        self.prod_tree.bind("<ButtonPress-1>", self.on_drag_start)
+        self.prod_tree.bind("<B1-Motion>", self.on_drag_motion)
+        self.prod_tree.bind("<ButtonRelease-1>", self.on_drag_release)
 
         btn_frame = ttk.Frame(product_frame)
         btn_frame.pack(fill=tk.X, pady=5)
@@ -192,6 +195,30 @@ class SalesView:
                 messagebox.showerror("Error", "Invalid quantity or discount")
 
         ttk.Button(qty_dialog, text="Add", command=confirm).pack(pady=10)
+
+    def on_drag_start(self, event):
+        item = self.prod_tree.identify_row(event.y)
+        if item:
+            self.drag_item = item
+            self.prod_tree.config(cursor="hand2")
+        else:
+            self.drag_item = None
+
+    def on_drag_motion(self, event):
+        pass
+
+    def on_drag_release(self, event):
+        if hasattr(self, 'drag_item') and self.drag_item:
+            self.prod_tree.config(cursor="")
+            try:
+                widget = self.prod_tree.winfo_containing(event.x_root, event.y_root)
+                # Check if it was dropped on the cart tree
+                if widget == self.cart_tree:
+                    self.prod_tree.selection_set(self.drag_item)
+                    self.add_to_cart()
+            except Exception:
+                pass
+            self.drag_item = None
 
     def refresh_cart(self):
         for row in self.cart_tree.get_children():

@@ -150,8 +150,29 @@ class MainWindow:
                 messagebox.showerror("Error", f"Import failed: {e}")
 
     def show_about(self):
-        messagebox.showinfo("About AD_Coder",
-            "AD_Coder v1.0\n\n"
-            "Firecracker Inventory Management System\n\n"
-            "Built with Python & Tkinter\n"
-            "Compatible with Windows, Mac & Linux")
+        import webbrowser
+        
+        dialog = tk.Toplevel(self.root)
+        dialog.title("About AD_Coder")
+        dialog.geometry("380x240")
+        dialog.resizable(False, False)
+        dialog.transient(self.root)
+        dialog.grab_set()
+
+        # Center dialog
+        dialog.update_idletasks()
+        width = dialog.winfo_width()
+        height = dialog.winfo_height()
+        x = self.root.winfo_x() + (self.root.winfo_width() // 2) - (width // 2)
+        y = self.root.winfo_y() + (self.root.winfo_height() // 2) - (height // 2)
+        dialog.geometry(f"+{x}+{y}")
+
+        ttk.Label(dialog, text="AD_Coder v1.0", font=("Arial", 16, "bold")).pack(pady=(20, 5))
+        ttk.Label(dialog, text="Firecracker Inventory Management System", font=("Arial", 10, "italic")).pack(pady=5)
+        ttk.Label(dialog, text="Built with Python & Tkinter\nCompatible with Windows, Mac & Linux", justify="center").pack(pady=5)
+        
+        link_label = tk.Label(dialog, text="GitHub: github.com/ad-kd", fg="blue", cursor="hand2", font=("Arial", 10, "underline"))
+        link_label.pack(pady=10)
+        link_label.bind("<Button-1>", lambda e: webbrowser.open("https://github.com/ad-kd"))
+
+        ttk.Button(dialog, text="Close", command=dialog.destroy).pack(pady=(5, 10))

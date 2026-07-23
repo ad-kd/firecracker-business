@@ -1,0 +1,13 @@
+How to run this project on another system:
+
+1. Ensure Python 3.x is installed on the target system.
+2. Install the required external packages using pip:
+   pip install -r requirements.txt
+
+3. Run the application:
+   python main.py
+
+Required Python Packages:
+- fpdf2 (used for PDF generation of invoices)
+- tkinter (built-in Python standard library, but on some Linux systems it might require: sudo apt-get install python3-tk)
+- sqlite3 (built-in Python standard library)

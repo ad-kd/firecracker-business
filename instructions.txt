@@ -1,13 +1,60 @@
-How to run this project on another system:
+# AD_Coder - Firecracker Inventory Management System
 
-1. Ensure Python 3.x is installed on the target system.
-2. Install the required external packages using pip:
+This document outlines the requirements and instructions to set up and run this project on any system.
+
+---
+
+## 1. Prerequisites (Python & Libraries)
+
+The application is built on Python 3 and uses standard libraries along with one external dependency for PDF receipt generation.
+
+### A. Python Standard Library Modules (Pre-installed with Python)
+You do not need to install these separately, but ensure your Python version is **3.8 or higher**:
+- **tkinter** (GUI framework)
+- **sqlite3** (Database management)
+- **os** (File path and directory handling)
+- **shutil** (Database backups and exports)
+- **datetime** / **timedelta** (Timestamps and date filtering for reports)
+- **tempfile** (Temporary file generation for printing)
+- **webbrowser** (Clickable GitHub link redirection)
+
+*Note for Linux Users: On some Linux distributions (like Ubuntu/Debian), Tkinter is not bundled by default. You can install it using:*
+```bash
+sudo apt-get install python3-tk
+```
+
+### B. External Dependencies
+- **fpdf2** (>= 2.8.7) - Used to generate professional PDF invoices/receipts automatically.
+
+---
+
+## 2. Installation Instructions
+
+1. **Clone or Extract the Project Files** to your local machine.
+2. **Open your Terminal** (or command prompt / PowerShell) and navigate (`cd`) to the project directory:
+   ```bash
+   cd "path/to/ad-project-main"
+   ```
+3. **Install the Required Packages** using the bundled `requirements.txt`:
+   ```bash
    pip install -r requirements.txt
+   ```
 
-3. Run the application:
-   python main.py
+---
 
-Required Python Packages:
-- fpdf2 (used for PDF generation of invoices)
-- tkinter (built-in Python standard library, but on some Linux systems it might require: sudo apt-get install python3-tk)
-- sqlite3 (built-in Python standard library)
+## 3. How to Run the Application
+
+Execute the entrypoint file `main.py` from the project directory:
+```bash
+python main.py
+```
+
+---
+
+## 4. Key Application Features Built-in
+
+- **Real-Time Data Refresh**: Dashboard stats, products list, and invoices update instantly when switching tabs (no restart required).
+- **Drag-and-Drop Billing**: Drag any product from the left inventory table and drop it directly onto the shopping cart on the right to trigger the quantity prompt.
+- **Dynamic Cart Calculations**: Computes fixed Subtotals, custom item-level discounts, and applies custom overall percentage discounts with live-updated "Total to Pay".
+- **Automatic PDF Receipt Generation**: Every generated invoice creates a PDF invoice inside the `invoices/` directory automatically.
+- **Database Backup & Migration**: In the File menu, backup/export/import SQLite database structures seamlessly.

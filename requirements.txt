@@ -1,3 +1,1 @@
-# AD_Coder - Firecracker Inventory Management System
-# External dependency for PDF generation: fpdf2
-fpdf2>=2.8.7
+fpdf2==2.8.7

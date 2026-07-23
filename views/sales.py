@@ -72,9 +72,31 @@ class SalesView:
 
         total_frame = ttk.Frame(cart_frame)
         total_frame.pack(fill=tk.X, pady=5)
-        ttk.Label(total_frame, text="Total Items: 0", font=("Arial", 11)).pack(side=tk.LEFT, padx=10)
-        self.total_label = ttk.Label(total_frame, text="Total: ₹0.00", font=("Arial", 14, "bold"))
-        self.total_label.pack(side=tk.RIGHT, padx=10)
+        
+        self.total_items_label = ttk.Label(total_frame, text="Total Items: 0", font=("Arial", 11))
+        self.total_items_label.pack(side=tk.LEFT, padx=10)
+
+        summary_frame = ttk.Frame(total_frame)
+        summary_frame.pack(side=tk.RIGHT, padx=10)
+
+        # Row 0: Subtotal
+        ttk.Label(summary_frame, text="Subtotal:", font=("Arial", 11)).grid(row=0, column=0, sticky=tk.E, padx=5, pady=2)
+        self.subtotal_label = ttk.Label(summary_frame, text="₹0.00", font=("Arial", 11, "bold"))
+        self.subtotal_label.grid(row=0, column=1, sticky=tk.W, padx=5, pady=2)
+
+        # Row 1: Discount %
+        ttk.Label(summary_frame, text="Discount (%):", font=("Arial", 11)).grid(row=1, column=0, sticky=tk.E, padx=5, pady=2)
+        self.cart_discount_var = tk.StringVar(value="0")
+        self.cart_discount_entry = ttk.Entry(summary_frame, textvariable=self.cart_discount_var, width=8)
+        self.cart_discount_entry.grid(row=1, column=1, sticky=tk.W, padx=5, pady=2)
+        
+        # Row 2: Total to Pay
+        ttk.Label(summary_frame, text="Total to Pay:", font=("Arial", 12, "bold")).grid(row=2, column=0, sticky=tk.E, padx=5, pady=2)
+        self.total_label = ttk.Label(summary_frame, text="₹0.00", font=("Arial", 14, "bold"), foreground="green")
+        self.total_label.grid(row=2, column=1, sticky=tk.W, padx=5, pady=2)
+
+        # Bind discount entry change
+        self.cart_discount_var.trace_add("write", lambda *args: self.calculate_totals())
 
         checkout_frame = ttk.LabelFrame(right, text="Checkout", padding=10)
         checkout_frame.pack(fill=tk.X, pady=10)
@@ -174,15 +196,37 @@ class SalesView:
     def refresh_cart(self):
         for row in self.cart_tree.get_children():
             self.cart_tree.delete(row)
-        total = 0
         for item in self.cart:
             self.cart_tree.insert("", tk.END, values=(
                 item["product_name"], item["quantity"],
                 f"₹{item['unit_price']:.2f}", f"{item['discount_percent']:.0f}%",
                 f"₹{item['line_total']:.2f}"
             ))
-            total += item["line_total"]
-        self.total_label.config(text=f"Total: ₹{total:.2f}")
+        self.calculate_totals()
+
+    def calculate_totals(self):
+        subtotal = sum(item["line_total"] for item in self.cart)
+        total_items = sum(item["quantity"] for item in self.cart)
+        if hasattr(self, 'total_items_label'):
+            self.total_items_label.config(text=f"Total Items: {total_items:.0f}" if total_items.is_integer() else f"Total Items: {total_items:.2f}")
+        
+        disc_val = 0
+        try:
+            val = self.cart_discount_var.get()
+            if val:
+                disc_val = float(val)
+        except ValueError:
+            pass
+        
+        discount_amount = subtotal * (disc_val / 100.0)
+        final_total = subtotal - discount_amount
+        if final_total < 0:
+            final_total = 0
+            
+        if hasattr(self, 'subtotal_label'):
+            self.subtotal_label.config(text=f"₹{subtotal:.2f}")
+        if hasattr(self, 'total_label'):
+            self.total_label.config(text=f"₹{final_total:.2f}")
 
     def remove_from_cart(self):
         sel = self.cart_tree.selection()
@@ -195,6 +239,7 @@ class SalesView:
 
     def clear_cart(self):
         self.cart = []
+        self.cart_discount_var.set("0")
         self.refresh_cart()
 
     def new_customer_dialog(self):
@@ -244,9 +289,20 @@ class SalesView:
             except:
                 pass
 
-        subtotal = sum(item["unit_price"] * item["quantity"] for item in self.cart)
-        discount_total = subtotal - sum(item["line_total"] for item in self.cart)
-        grand_total = sum(item["line_total"] for item in self.cart)
+        subtotal = sum(item["line_total"] for item in self.cart)
+        
+        disc_val = 0
+        try:
+            val = self.cart_discount_var.get()
+            if val:
+                disc_val = float(val)
+        except ValueError:
+            pass
+            
+        discount_total = subtotal * (disc_val / 100.0)
+        grand_total = subtotal - discount_total
+        if grand_total < 0:
+            grand_total = 0
 
         try:
             inv_no = self.db.create_invoice(
@@ -257,6 +313,7 @@ class SalesView:
             messagebox.showinfo("Invoice Created", f"Invoice #{inv_no} generated successfully!")
             self.show_invoice_receipt(inv_no)
             self.cart = []
+            self.cart_discount_var.set("0")
             self.refresh_cart()
             self.load_product_list()
         except Exception as e:

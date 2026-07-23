@@ -163,7 +163,7 @@ class CustomersView:
             # Show dialog to pick which invoice to open
             dialog = tk.Toplevel(self.frame)
             dialog.title("Select Invoice")
-            dialog.geometry("300x250")
+            dialog.geometry("320x300")
             dialog.transient(self.frame)
             dialog.grab_set()
             

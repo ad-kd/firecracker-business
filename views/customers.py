@@ -1,6 +1,7 @@
 import os
 import tkinter as tk
 from tkinter import ttk, messagebox
+from utils.gui_helper import center_window
 
 
 class CustomersView:
@@ -57,7 +58,8 @@ class CustomersView:
     def add_customer_dialog(self):
         dialog = tk.Toplevel(self.frame)
         dialog.title("Add Customer")
-        dialog.geometry("450x300")
+        dialog.geometry("450x220")
+        center_window(dialog, self.frame)
         dialog.transient(self.frame)
         dialog.grab_set()
 
@@ -99,7 +101,8 @@ class CustomersView:
 
         dialog = tk.Toplevel(self.frame)
         dialog.title(f"Edit Customer - {cust['name']}")
-        dialog.geometry("450x300")
+        dialog.geometry("450x220")
+        center_window(dialog, self.frame)
         dialog.transient(self.frame)
         dialog.grab_set()
 
@@ -164,6 +167,7 @@ class CustomersView:
             dialog = tk.Toplevel(self.frame)
             dialog.title("Select Invoice")
             dialog.geometry("320x300")
+            center_window(dialog, self.frame)
             dialog.transient(self.frame)
             dialog.grab_set()
             

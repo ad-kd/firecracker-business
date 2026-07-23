@@ -4,6 +4,7 @@ from datetime import datetime
 import os
 import tempfile
 from fpdf import FPDF
+from utils.gui_helper import center_window
 
 
 class SalesView:
@@ -155,7 +156,8 @@ class SalesView:
 
         qty_dialog = tk.Toplevel(self.frame)
         qty_dialog.title("Enter Quantity")
-        qty_dialog.geometry("300x280")
+        qty_dialog.geometry("300x240")
+        center_window(qty_dialog, self.frame)
         qty_dialog.transient(self.frame)
         qty_dialog.grab_set()
 
@@ -273,6 +275,7 @@ class SalesView:
         dialog = tk.Toplevel(self.frame)
         dialog.title("New Customer")
         dialog.geometry("400x300")
+        center_window(dialog, self.frame)
         dialog.transient(self.frame)
         dialog.grab_set()
 

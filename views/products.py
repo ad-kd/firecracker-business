@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
+from utils.gui_helper import center_window
 
 
 class ProductsView:
@@ -85,7 +86,8 @@ class ProductsView:
     def add_product_dialog(self):
         dialog = tk.Toplevel(self.frame)
         dialog.title("Add Product")
-        dialog.geometry("400x310")
+        dialog.geometry("400x265")
+        center_window(dialog, self.frame)
         dialog.transient(self.frame)
         dialog.grab_set()
 
@@ -156,7 +158,8 @@ class ProductsView:
 
         dialog = tk.Toplevel(self.frame)
         dialog.title(f"Edit Product - {prod['name']}")
-        dialog.geometry("400x310")
+        dialog.geometry("400x265")
+        center_window(dialog, self.frame)
         dialog.transient(self.frame)
         dialog.grab_set()
 

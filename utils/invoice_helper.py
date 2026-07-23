@@ -11,9 +11,11 @@ def show_invoice_receipt(parent_frame, db, inv_no):
         return
     items = db.conn.execute("SELECT * FROM invoice_items WHERE invoice_id=?", (invoice["id"],)).fetchall()
 
+    from utils.gui_helper import center_window
     dialog = tk.Toplevel(parent_frame)
     dialog.title(f"Invoice {inv_no}")
     dialog.geometry("500x550")
+    center_window(dialog, parent_frame)
     dialog.transient(parent_frame)
     dialog.grab_set()
 

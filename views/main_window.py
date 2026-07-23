@@ -37,8 +37,18 @@ class MainWindow:
     def on_tab_changed(self, event):
         selected_tab = self.notebook.select()
         tab_text = self.notebook.tab(selected_tab, "text").strip()
-        if tab_text == "Customers":
+        if tab_text == "Dashboard":
+            self.dashboard.refresh()
+        elif tab_text == "Products":
+            self.products.load_products()
+        elif tab_text == "Sales / Invoicing":
+            self.sales.load_product_list()
+            self.sales.load_customers()
+        elif tab_text == "Customers":
             self.customers.load_customers()
+        elif tab_text == "Reports":
+            self.reports.load_sales_report("today")
+            self.reports.refresh_expenses()
 
     def create_menu(self):
         menubar = tk.Menu(self.root)
